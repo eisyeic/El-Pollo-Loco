@@ -25,6 +25,12 @@ class Character extends MovableObject {
   ];
 
   world;
+  offset = {
+    top: 120,
+    left: 30,
+    right: 30,
+    bottom: 10,
+  };
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
@@ -38,11 +44,13 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
+        this.otherDirection = false;
         //this.walking_sound.play();
       }
 
       if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
+        this.otherDirection = true;
         //this.walking_sound.play();
       }
 
