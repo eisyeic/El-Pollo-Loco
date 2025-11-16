@@ -4,8 +4,75 @@ body {
     align-items: center;
     flex-direction: column;
     height: 100vh;
+    margin: 0;
+    background-image: url('img/main-background/4279652.jpg');
+    background-position: center;
+    height: 100vh;
+    object-fit: cover;
+    font-family: 'campfire', Arial, Helvetica, sans-serif;
 }
 
 canvas {
     background-color: black;
+    display: block;
+}
+
+h1 {
+    margin: 0;
+    padding-bottom: 10px;
+    background: linear-gradient(45deg, #ffff00, #ffa500, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 0.5px rgb(161, 35, 10);
+    text-align: center;
+    font-size: 60px;
+}
+
+.keyboard-elements {
+    display: flex;
+    gap: 20px;
+    font-size: 20px;
+    background: linear-gradient(45deg, #ffff00, #ffa500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 0.5px rgb(161, 35, 10);
+    text-align: center;
+}
+
+@font-face{
+    font-family: 'campfire';
+    src: url('fonts/campfire.ttf') format('truetype'),
+        
+}
+
+/* Smartphones ------------*/
+@media only screen and (max-width: 720px) {
+    canvas {
+        width: 100%;
+    }
+}
+
+/* Smartphones ------------*/
+@media only screen and (max-height: 480px) {
+    canvas {
+        height: 100%;
+    }
+}
+
+@media (max-width: 720px) {
+    h1 {
+        font-size: 50px;
+    }
+}
+
+@media (max-height: 650px) {
+    h1 {
+        display: none;
+    }
+
+    span {
+        display: none;
+    }
 }

@@ -1,8 +1,8 @@
 class Endboss extends MovableObject {
-
-    y = 50;
-    height = 400;
-    width = 330;
+  y = 50;
+  height = 400;
+  width = 330;
+  hadFirstContact = false;
 
   IMAGES_WALKING = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -23,8 +23,19 @@ class Endboss extends MovableObject {
   }
 
   animate() {
+    let i = 0;
     setInterval(() => {
       this.playAnimation(this.IMAGES_WALKING);
+
+      if (
+        world &&
+        world.character &&
+        world.character.x > 2000 &&
+        !this.hadFirstContact
+      ) {
+        i = 0;
+        this.hadFirstContact = true;
+      }
     }, 150);
   }
 }
