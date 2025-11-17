@@ -26,12 +26,12 @@ h1 {
     background-clip: text;
     -webkit-text-stroke: 0.5px rgb(161, 35, 10);
     text-align: center;
-    font-size: 60px;
+    font-size: 90px;
 }
 
 .keyboard-elements {
     display: flex;
-    gap: 20px;
+    justify-content: space-around;
     font-size: 20px;
     background: linear-gradient(45deg, #ffff00, #ffa500);
     -webkit-background-clip: text;
@@ -39,6 +39,27 @@ h1 {
     background-clip: text;
     -webkit-text-stroke: 0.5px rgb(161, 35, 10);
     text-align: center;
+    width: 720px;
+    padding-top: 5px;
+    
+
+    img {
+        width: 150px;
+    }
+}
+
+.smart-elements {
+    display: none;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    padding-top: 5px;
+
+    img {
+        height: 25px;
+    }
 }
 
 @font-face{
@@ -65,6 +86,14 @@ h1 {
     h1 {
         font-size: 50px;
     }
+
+    .keyboard-elements{
+        display: none;
+    }
+
+    .smart-elements {
+    display: flex;
+}
 }
 
 @media (max-height: 650px) {
@@ -72,7 +101,11 @@ h1 {
         display: none;
     }
 
-    span {
+    .keyboard-elements {
         display: none;
     }
+
+    .smart-elements {
+    display: flex;
+}
 }
