@@ -7,7 +7,6 @@ body {
     margin: 0;
     background-image: url('img/main-background/4279652.jpg');
     background-position: center;
-    height: 100vh;
     object-fit: cover;
     font-family: 'campfire', Arial, Helvetica, sans-serif;
 }
@@ -69,18 +68,21 @@ h1 {
 }
 
 /* Smartphones ------------*/
+/* Entferne die alten canvas Media Queries und ersetze mit: */
 @media only screen and (max-width: 720px) {
     canvas {
-        width: 100%;
+        width: 100vw;
+        height: calc(100vw * 480 / 720);
     }
 }
 
-/* Smartphones ------------*/
 @media only screen and (max-height: 480px) {
     canvas {
-        height: 100%;
+        height: calc(100vh - 50px);
+        width: calc(100vh * 720 / 480);
     }
 }
+
 
 @media (max-width: 720px) {
     h1 {
