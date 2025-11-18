@@ -1,4 +1,5 @@
 class World {
+  gameState = "start"; // 'start' oder 'playing'
   character = new Character();
   level = level1;
   canvas;
@@ -25,8 +26,10 @@ class World {
 
   run() {
     setInterval(() => {
-      this.checkCollisions();
-      this.checkThrowObjects();
+      if (this.gameState === "playing") {
+        this.checkCollisions();
+        this.checkThrowObjects();
+      }
     }, 1000 / 60);
   }
 
@@ -57,11 +60,36 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    if (this.gameState === "start") {
+      this.showStartScreen();
+    } else if (this.gameState === "playing") {
+      this.drawGame();
+    }
+
+    let self = this;
+    requestAnimationFrame(function () {
+      self.draw();
+    });
+  }
+
+  showStartScreen() {
+    this.addObjectsToMap(this.level.startImage);
+
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "24px Arial";
+    this.ctx.fillText("Press SPACE to Start", this.canvas.width / 3, 450);
+
+    if (this.keyboard.SPACE) {
+      this.gameState = "playing";
+    }
+  }
+
+  drawGame() {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
 
     this.ctx.translate(-this.camera_x, 0);
-    // -------- Space for fixed objects ----------
+
     this.addToMap(this.statusBar);
     this.ctx.translate(this.camera_x, 0);
 
@@ -71,11 +99,6 @@ class World {
     this.addObjectsToMap(this.throwableObject);
 
     this.ctx.translate(-this.camera_x, 0);
-
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
   }
 
   addObjectsToMap(objects) {

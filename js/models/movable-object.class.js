@@ -12,6 +12,7 @@ class MovableObject extends DrawableObject {
 
   energy = 100;
   lastHit = 0;
+  isMoving = false;
 
   applyGravity() {
     setInterval(() => {
@@ -41,7 +42,7 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
-    this.energy -= 5;
+    this.energy -= 0.5;
     if (this.energy < 0) {
       this.energy = 0;
     } else this.lastHit = new Date().getTime();
@@ -59,15 +60,25 @@ class MovableObject extends DrawableObject {
 
   moveRight() {
     this.x += this.speed;
+    this.isMoving = true;
   }
 
   moveLeft() {
     this.x -= this.speed;
+    this.isMoving = true;
   }
 
   jump() {
     this.speedY = 30;
+    this.isMoving = true;
   }
+
+  isIdle() {
+    let wasIdle = !this.isMoving;
+    this.isMoving = false;
+    return wasIdle;
+  }
+
   playAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
