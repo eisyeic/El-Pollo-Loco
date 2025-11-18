@@ -64,6 +64,8 @@ class World {
       this.showStartScreen();
     } else if (this.gameState === "playing") {
       this.drawGame();
+    } else if (this.gameState === "gameOver") {
+      this.showGameOverScreen();
     }
 
     let self = this;
@@ -99,6 +101,19 @@ class World {
     this.addObjectsToMap(this.throwableObject);
 
     this.ctx.translate(-this.camera_x, 0);
+  }
+
+  showGameOverScreen() {
+    this.level.endImages[0].startGameOverSequence();
+    this.addObjectsToMap(this.level.endImages);
+
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "24px Arial";
+    this.ctx.fillText("Press SPACE to Restart", this.canvas.width / 3, 450);
+
+    if (this.keyboard.SPACE) {
+      this.gameState = "playing";
+    }
   }
 
   addObjectsToMap(objects) {

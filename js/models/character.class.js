@@ -104,6 +104,7 @@ class Character extends MovableObject {
       } else if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
         clearAllIntervals();
+        this.world.gameState = "gameOver";
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else {

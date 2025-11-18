@@ -55,5 +55,11 @@ level1 = new Level(
       720 * 3
     ),
   ],
-  [new StartImage("img/9_intro_outro_screens/start/startscreen_1.png")]
+  [new StartImage("img/9_intro_outro_screens/start/startscreen_1.png")],
+  [
+    new EndImage(
+      "img/You won, you lost/You lost.png",
+      "img/You won, you lost/Game Over.png"
+    ),
+  ]
 );
