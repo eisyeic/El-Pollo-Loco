@@ -41,7 +41,8 @@ class World {
     ) {
       let bottle = new ThrowableObject(
         this.character.x + 100,
-        this.character.y + 50
+        this.character.y + 50,
+        this.character.otherDirection
       );
       this.throwableObject.push(bottle);
       this.lastThrowTime = currentTime;
@@ -92,7 +93,6 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
 
-    this.addToMap(this.statusBar);
     this.ctx.translate(this.camera_x, 0);
 
     this.addToMap(this.character);
@@ -101,9 +101,12 @@ class World {
     this.addObjectsToMap(this.throwableObject);
 
     this.ctx.translate(-this.camera_x, 0);
+    this.addToMap(this.statusBar);
   }
 
   showGameOverScreen() {
+    this.drawGame();
+    
     this.level.endImages[0].startGameOverSequence();
     this.addObjectsToMap(this.level.endImages);
 
@@ -112,8 +115,22 @@ class World {
     this.ctx.fillText("Press SPACE to Restart", this.canvas.width / 3, 450);
 
     if (this.keyboard.SPACE) {
-      this.gameState = "playing";
+      this.restartGame();
     }
+  }
+
+  restartGame() {
+    clearAllIntervals();
+    initLevel1();
+    this.character = new Character();
+    this.character.world = this;
+    this.level = level1;
+    this.camera_x = -100;
+    this.statusBar = new StatusBar();
+    this.throwableObject = [];
+    this.lastThrowTime = 0;
+    this.gameState = "playing";
+    this.run();
   }
 
   addObjectsToMap(objects) {

@@ -38,12 +38,11 @@ class Character extends MovableObject {
     "img/2_character_pepe/3_jump/J-39.png",
   ];
 
-    IMAGES_HURT = [
+  IMAGES_HURT = [
     "img/2_character_pepe/4_hurt/H-41.png",
     "img/2_character_pepe/4_hurt/H-42.png",
     "img/2_character_pepe/4_hurt/H-43.png",
   ];
-
 
   IMAGES_DEAD = [
     "img/2_character_pepe/5_dead/D-53.png",
@@ -53,7 +52,6 @@ class Character extends MovableObject {
     "img/2_character_pepe/5_dead/D-51.png",
     "img/2_character_pepe/5_dead/D-52.png",
   ];
-
 
   world;
   offset = {
@@ -103,8 +101,10 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
-        clearAllIntervals();
-        this.world.gameState = "gameOver";
+        setTimeout(() => {
+          clearAllIntervals();
+          this.world.gameState = "gameOver";
+        }, 1000);
       } else if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else {

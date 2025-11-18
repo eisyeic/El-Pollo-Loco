@@ -8,7 +8,7 @@ body {
     background-image: url('img/main-background/4279652.jpg');
     background-position: center;
     object-fit: cover;
-    font-family: 'campfire', Arial, Helvetica, sans-serif;
+    font-family: 'the-funy-times', Arial, Helvetica, sans-serif;
 }
 
 canvas {
@@ -25,7 +25,7 @@ h1 {
     background-clip: text;
     -webkit-text-stroke: 0.5px rgb(161, 35, 10);
     text-align: center;
-    font-size: 90px;
+    font-size: 110px;
 }
 
 .keyboard-elements {
@@ -39,7 +39,7 @@ h1 {
     -webkit-text-stroke: 0.5px rgb(161, 35, 10);
     text-align: center;
     width: 720px;
-    padding-top: 5px;
+    padding-top: 20px;
     
 
     img {
@@ -62,8 +62,8 @@ h1 {
 }
 
 @font-face{
-    font-family: 'campfire';
-    src: url('fonts/campfire.ttf') format('truetype'),
+    font-family: 'the-funy-times';
+    src: url('fonts/the-funy-times.ttf') format('truetype'),
         
 }
 
