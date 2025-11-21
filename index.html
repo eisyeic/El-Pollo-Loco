@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="en">
+
     <title>El Pollo Loco</title>
 
     <link rel="stylesheet" href="style.css">
@@ -32,25 +35,40 @@
 <body onload="init()">
 
     <h1>EL POLLO LOCO</h1>
+    <div id="canvas-screen">
+        <div class="game-tools" id="game-tools-box">
 
-    <canvas id="canvas" width="720" height="480"></canvas>
+            <img src="img/icons/fullscreen-start.png" alt="Fullscreen Start Icon" id="fullscreen-start-icon"
+                onclick="toggleFullscreen()">
+            <img src="img/icons/fullscreen-end.png" alt="Fullscreen End Icon" class="d-none" id="fullscreen-end-icon"
+                onclick="toggleFullscreen()">
 
+            <img src="img/icons/sound-on.png" alt="Sound On Icon" id="sound-on-icon">
+            <img src="img/icons/sound-off.png" alt="Sound Off Icon" class="d-none" id="sound-off-icon">
+
+            <img src="img/icons/restart.png" alt="Restart Icon" onclick="world.restartGame()">
+        </div>
+
+
+        <canvas id="canvas" width="720" height="480"></canvas>
+
+        <div class="smart-elements">
+            <div class="arrow-icons">
+                <img src="img/icons/left.png" id="btn-left" alt="Left Icon">
+                <img src="img/icons/right.png" id="btn-right" alt="Right Icon">
+            </div>
+            <div class="action-icons">
+                <img src="img/icons/jump.png" id="btn-jump" alt="Jump Icon">
+                <img src="img/icons/bottle.png" id="btn-bottle" alt="Bottle Icon">
+            </div>
+        </div>
+    </div>
     <div class="keyboard-elements">
         <img src="img/icons/arrow.png" alt="Arrow Info">
         <img src="img/icons/space.png" alt="Space Info">
         <img src="img/icons/strg.png" alt="Strg Info">
     </div>
 
-    <div class="smart-elements">
-        <div class="arrow-icons">
-            <img src="img/icons/left.png" id="btn-left" alt="Left Icon">
-            <img src="img/icons/right.png" id="btn-right" alt="Right Icon">
-        </div>
-        <div class="action-icons">
-            <img src="img/icons/jump.png" id="btn-jump" alt="Jump Icon">
-            <img src="img/icons/bottle.png" id="btn-bottle" alt="Bottle Icon">
-        </div>
-    </div>
 
 </body>
 

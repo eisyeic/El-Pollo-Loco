@@ -10,6 +10,7 @@ class World {
   throwableObject = [];
   lastThrowTime = 0;
   throwCooldown = 300;
+  screenlayer = false;
 
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
@@ -165,3 +166,29 @@ class World {
     this.ctx.restore();
   }
 }
+
+function toggleFullscreen() {
+  const canvasContainer = document.getElementById('canvas-screen');
+  const gameTools = document.getElementById('game-tools-box');
+  const fullscreenStartIcon = document.getElementById('fullscreen-start-icon');
+  const fullscreenEndIcon = document.getElementById('fullscreen-end-icon');
+  
+  if (!document.fullscreenElement) {
+    canvasContainer.requestFullscreen();
+    gameTools.classList.add('fullscreen-overlay');
+    fullscreenStartIcon.classList.add('d-none');
+    fullscreenEndIcon.classList.remove('d-none');
+  } else {
+    document.exitFullscreen();
+    gameTools.classList.remove('fullscreen-overlay');
+    fullscreenStartIcon.classList.remove('d-none');
+    fullscreenEndIcon.classList.add('d-none');
+  }
+}
+
+
+
+
+
+
+
