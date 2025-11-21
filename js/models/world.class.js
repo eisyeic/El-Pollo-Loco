@@ -30,8 +30,33 @@ class World {
       if (this.gameState === "playing") {
         this.checkCollisions();
         this.checkThrowObjects();
+        this.checkBottleCollisions();
       }
     }, 1000 / 60);
+  }
+
+  checkBottleCollisions() {
+    for (let i = this.throwableObject.length - 1; i >= 0; i--) {
+      let bottle = this.throwableObject[i];
+
+      for (let j = this.level.enemies.length - 1; j >= 0; j--) {
+        let enemy = this.level.enemies[j];
+
+        if (bottle.isColliding(enemy) && !enemy.isKilled) {
+          this.throwableObject.splice(i, 1);
+          enemy.killEnemy();
+
+          setTimeout(() => {
+            let index = this.level.enemies.indexOf(enemy);
+            if (index > -1) {
+              this.level.enemies.splice(index, 1);
+            }
+          }, 1000);
+
+          break;
+        }
+      }
+    }
   }
 
   checkThrowObjects() {
@@ -107,7 +132,7 @@ class World {
 
   showGameOverScreen() {
     this.drawGame();
-    
+
     this.level.endImages[0].startGameOverSequence();
     this.addObjectsToMap(this.level.endImages);
 
@@ -167,28 +192,29 @@ class World {
   }
 }
 
-function toggleFullscreen() {
-  const canvasContainer = document.getElementById('canvas-screen');
-  const gameTools = document.getElementById('game-tools-box');
-  const fullscreenStartIcon = document.getElementById('fullscreen-start-icon');
-  const fullscreenEndIcon = document.getElementById('fullscreen-end-icon');
-  
-  if (!document.fullscreenElement) {
-    canvasContainer.requestFullscreen();
-    gameTools.classList.add('fullscreen-overlay');
-    fullscreenStartIcon.classList.add('d-none');
-    fullscreenEndIcon.classList.remove('d-none');
-  } else {
-    document.exitFullscreen();
-    gameTools.classList.remove('fullscreen-overlay');
-    fullscreenStartIcon.classList.remove('d-none');
-    fullscreenEndIcon.classList.add('d-none');
-  }
+function enterFullscreen(canvasContainer, gameTools, fullscreenStartIcon, fullscreenEndIcon) {
+  canvasContainer.requestFullscreen();
+  gameTools.classList.add("fullscreen-overlay");
+  fullscreenStartIcon.classList.add("d-none");
+  fullscreenEndIcon.classList.remove("d-none");
 }
 
+function exitFullscreen(gameTools, fullscreenStartIcon, fullscreenEndIcon) {
+  document.exitFullscreen();
+  gameTools.classList.remove("fullscreen-overlay");
+  fullscreenStartIcon.classList.remove("d-none");
+  fullscreenEndIcon.classList.add("d-none");
+}
 
+function toggleFullscreen() {
+  const canvasContainer = document.getElementById("canvas-screen");
+  const gameTools = document.getElementById("game-tools-box");
+  const fullscreenStartIcon = document.getElementById("fullscreen-start-icon");
+  const fullscreenEndIcon = document.getElementById("fullscreen-end-icon");
 
-
-
-
-
+  if (!document.fullscreenElement) {
+    enterFullscreen(canvasContainer, gameTools, fullscreenStartIcon, fullscreenEndIcon);
+  } else {
+    exitFullscreen(gameTools, fullscreenStartIcon, fullscreenEndIcon);
+  }
+}

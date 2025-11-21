@@ -9,29 +9,32 @@ class ChickenBaby extends MovableObject {
     "img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
 
-  IMAGES_DEAD = [
-    "img/3_enemies_chicken/chicken_small/2_dead/dead.png",
-  ];
+  IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGES_DEAD); // Hinzufügen
 
     this.x = 800 + Math.random() * 800;
-
     this.speed = 0.15 + Math.random() * 0.5;
-
     this.animate();
   }
 
   animate() {
     setInterval(() => {
-      this.moveLeft();
-      this.otherDirection = false;
+      if (!this.isKilled) {
+        // isKilled statt isDead
+        this.moveLeft();
+        this.otherDirection = false;
+      }
     }, 1000 / 60);
 
     setInterval(() => {
-      this.playAnimation(this.IMAGES_WALKING);
+      if (!this.isKilled) {
+        // isKilled statt isDead
+        this.playAnimation(this.IMAGES_WALKING);
+      }
     }, 150);
   }
 }

@@ -24,7 +24,8 @@ class MovableObject extends DrawableObject {
   }
 
   isAboveGround() {
-    if (this instanceof ThrowableObject) {    // ThrowableObject should always fall
+    if (this instanceof ThrowableObject) {
+      // ThrowableObject should always fall
       return true;
     } else {
       return this.y < 180;
@@ -85,4 +86,11 @@ class MovableObject extends DrawableObject {
     this.img = this.imageCache[path];
     this.currentImage++;
   }
+killEnemy() {
+  this.isKilled = true;
+  
+  if (this.IMAGES_DEAD && this.IMAGES_DEAD.length > 0) {
+    this.img = this.imageCache[this.IMAGES_DEAD[0]];
+  }
+}
 }
