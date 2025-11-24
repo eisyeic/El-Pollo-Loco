@@ -16,7 +16,7 @@ class ChickenBaby extends MovableObject {
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD); // Hinzufügen
 
-    this.x = 800 + Math.random() * 800;
+    this.x = 500 + Math.random() * 2000;
     this.speed = 0.15 + Math.random() * 0.5;
     this.animate();
   }

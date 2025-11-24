@@ -4,12 +4,12 @@ class Cloud extends MovableObject {
   height = 150;
   speed = 0.15;
   static cloudIndex = 0;
-  static positions = [300, 1300, 2100];
+  static cloudPositions = [300, 1300, 2100];
 
   constructor() {
     super().loadImage("img/5_background/layers/4_clouds/1.png");
 
-    this.x = Cloud.positions[Cloud.cloudIndex % Cloud.positions.length];
+    this.x = Cloud.cloudPositions[Cloud.cloudIndex % Cloud.cloudPositions.length];
     Cloud.cloudIndex++;
     this.animate();
   }

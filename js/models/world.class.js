@@ -125,6 +125,8 @@ class World {
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObject);
+    this.addObjectsToMap(this.level.bottle);
+    this.addObjectsToMap(this.level.coins);
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBar);
@@ -192,7 +194,12 @@ class World {
   }
 }
 
-function enterFullscreen(canvasContainer, gameTools, fullscreenStartIcon, fullscreenEndIcon) {
+function enterFullscreen(
+  canvasContainer,
+  gameTools,
+  fullscreenStartIcon,
+  fullscreenEndIcon
+) {
   canvasContainer.requestFullscreen();
   gameTools.classList.add("fullscreen-overlay");
   fullscreenStartIcon.classList.add("d-none");
@@ -213,7 +220,12 @@ function toggleFullscreen() {
   const fullscreenEndIcon = document.getElementById("fullscreen-end-icon");
 
   if (!document.fullscreenElement) {
-    enterFullscreen(canvasContainer, gameTools, fullscreenStartIcon, fullscreenEndIcon);
+    enterFullscreen(
+      canvasContainer,
+      gameTools,
+      fullscreenStartIcon,
+      fullscreenEndIcon
+    );
   } else {
     exitFullscreen(gameTools, fullscreenStartIcon, fullscreenEndIcon);
   }
