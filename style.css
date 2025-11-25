@@ -151,24 +151,6 @@ h1 {
     .keyboard-elements {
         display: none;
     }
-
-    #fullscreen-start-icon {
-        display: none;
-    }
-    
-    #canvas-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: url('img/main-background/4279652.jpg');
-        background-position: center;
-        background-size: cover;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
     
     canvas {
         width: 100vw !important;

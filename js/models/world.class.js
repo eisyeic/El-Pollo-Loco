@@ -8,6 +8,7 @@ class World {
   camera_x = -100;
   statusBar = new StatusBar();
   throwableObject = [];
+  collectedBottles = 0;
   lastThrowTime = 0;
   throwCooldown = 300;
   screenlayer = false;
@@ -31,6 +32,7 @@ class World {
         this.checkCollisions();
         this.checkThrowObjects();
         this.checkBottleCollisions();
+        this.takeABottle();
       }
     }, 1000 / 60);
   }
@@ -63,7 +65,8 @@ class World {
     let currentTime = Date.now();
     if (
       this.keyboard.STRG &&
-      currentTime - this.lastThrowTime > this.throwCooldown
+      currentTime - this.lastThrowTime > this.throwCooldown &&
+      this.collectedBottles > 0
     ) {
       let bottle = new ThrowableObject(
         this.character.x + 100,
@@ -71,6 +74,7 @@ class World {
         this.character.otherDirection
       );
       this.throwableObject.push(bottle);
+      this.collectedBottles--;
       this.lastThrowTime = currentTime;
     }
   }
@@ -82,6 +86,16 @@ class World {
         this.statusBar.setPercentage(this.character.energy);
       }
     });
+  }
+
+  takeABottle() {
+    for (let i = this.level.bottle.length - 1; i >= 0; i--) {
+      let bottle = this.level.bottle[i];
+      if (this.character.isColliding(bottle)) {
+        this.level.bottle.splice(i, 1);
+        this.collectedBottles++;
+      }
+    }
   }
 
   draw() {
@@ -101,17 +115,25 @@ class World {
     });
   }
 
-  showStartScreen() {
-    this.addObjectsToMap(this.level.startImage);
+showStartScreen() {
+  this.addObjectsToMap(this.level.startImage);
 
-    this.ctx.fillStyle = "white";
-    this.ctx.font = "24px Arial";
-    this.ctx.fillText("Press SPACE to Start", this.canvas.width / 3, 450);
+  this.ctx.fillStyle = "white";
+  this.ctx.font = "24px Arial";
+  
+  const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
+  const startText = isMobile ? "Press to Jump" : "Press SPACE to Start";
+  
+  const textWidth = this.ctx.measureText(startText).width;
+  const x = (this.canvas.width - textWidth) / 2;
+  
+  this.ctx.fillText(startText, x, 450);
 
-    if (this.keyboard.SPACE) {
-      this.gameState = "playing";
-    }
+  if (this.keyboard.SPACE) {
+    this.gameState = "playing";
   }
+}
+
 
   drawGame() {
     this.ctx.translate(this.camera_x, 0);
@@ -156,6 +178,7 @@ class World {
     this.camera_x = -100;
     this.statusBar = new StatusBar();
     this.throwableObject = [];
+    this.collectedBottles = 0; // Inventar zurücksetzen
     this.lastThrowTime = 0;
     this.gameState = "playing";
     this.run();
