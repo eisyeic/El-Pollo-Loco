@@ -7,8 +7,14 @@ class World {
   keyboard;
   camera_x = -100;
   statusBar = new StatusBar();
+  endbossBar = new EndbossBar();
+  coinsBar = new CoinsBar();
+  bottleBar = new BottleBar();
   throwableObject = [];
   collectedBottles = 0;
+  collectedCoins = 0;
+  totalCoins = 5;
+  totalBottles = 7;
   lastThrowTime = 0;
   throwCooldown = 300;
   screenlayer = false;
@@ -33,8 +39,21 @@ class World {
         this.checkThrowObjects();
         this.checkBottleCollisions();
         this.takeABottle();
+        this.collectCoins();
       }
     }, 1000 / 60);
+  }
+
+  collectCoins() {
+    for (let i = this.level.coins.length - 1; i >= 0; i--) {
+      let coin = this.level.coins[i];
+      if (this.character.isColliding(coin)) {
+        this.level.coins.splice(i, 1);
+        this.collectedCoins++;
+        let percentage = (this.collectedCoins / this.totalCoins) * 100;
+        this.coinsBar.setPercentage(percentage);
+      }
+    }
   }
 
   checkBottleCollisions() {
@@ -61,23 +80,26 @@ class World {
     }
   }
 
-  checkThrowObjects() {
-    let currentTime = Date.now();
-    if (
-      this.keyboard.STRG &&
-      currentTime - this.lastThrowTime > this.throwCooldown &&
-      this.collectedBottles > 0
-    ) {
-      let bottle = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 50,
-        this.character.otherDirection
-      );
-      this.throwableObject.push(bottle);
-      this.collectedBottles--;
-      this.lastThrowTime = currentTime;
-    }
+checkThrowObjects() {
+  let currentTime = Date.now();
+  if (
+    this.keyboard.STRG &&
+    currentTime - this.lastThrowTime > this.throwCooldown &&
+    this.collectedBottles > 0
+  ) {
+    let bottle = new ThrowableObject(
+      this.character.x + 100,
+      this.character.y + 50,
+      this.character.otherDirection
+    );
+    this.throwableObject.push(bottle);
+    this.collectedBottles--;
+    let percentage = (this.collectedBottles / this.totalBottles) * 100;
+    this.bottleBar.setPercentage(percentage);
+    this.lastThrowTime = currentTime;
   }
+}
+
 
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
@@ -88,12 +110,14 @@ class World {
     });
   }
 
-  takeABottle() {
+ takeABottle() {
     for (let i = this.level.bottle.length - 1; i >= 0; i--) {
       let bottle = this.level.bottle[i];
       if (this.character.isColliding(bottle)) {
         this.level.bottle.splice(i, 1);
         this.collectedBottles++;
+        let percentage = (this.collectedBottles / this.totalBottles) * 100;
+        this.bottleBar.setPercentage(percentage);
       }
     }
   }
@@ -115,25 +139,24 @@ class World {
     });
   }
 
-showStartScreen() {
-  this.addObjectsToMap(this.level.startImage);
+  showStartScreen() {
+    this.addObjectsToMap(this.level.startImage);
 
-  this.ctx.fillStyle = "white";
-  this.ctx.font = "24px Arial";
-  
-  const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
-  const startText = isMobile ? "Press to Jump" : "Press SPACE to Start";
-  
-  const textWidth = this.ctx.measureText(startText).width;
-  const x = (this.canvas.width - textWidth) / 2;
-  
-  this.ctx.fillText(startText, x, 450);
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "24px Arial";
 
-  if (this.keyboard.SPACE) {
-    this.gameState = "playing";
+    const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
+    const startText = isMobile ? "Press Jump to Start" : "Press SPACE to Start";
+
+    const textWidth = this.ctx.measureText(startText).width;
+    const x = (this.canvas.width - textWidth) / 2;
+
+    this.ctx.fillText(startText, x, 450);
+
+    if (this.keyboard.SPACE) {
+      this.gameState = "playing";
+    }
   }
-}
-
 
   drawGame() {
     this.ctx.translate(this.camera_x, 0);
@@ -152,6 +175,9 @@ showStartScreen() {
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBar);
+    this.addToMap(this.endbossBar);
+    this.addToMap(this.coinsBar);
+    this.addToMap(this.bottleBar);
   }
 
   showGameOverScreen() {
@@ -177,8 +203,12 @@ showStartScreen() {
     this.level = level1;
     this.camera_x = -100;
     this.statusBar = new StatusBar();
+    this.endbossBar = new EndbossBar();
+    this.coinsBar = new CoinsBar();
+    this.bottleBar = new BottleBar();
     this.throwableObject = [];
-    this.collectedBottles = 0; // Inventar zurücksetzen
+    this.collectedBottles = 0;
+     this.collectedCoins = 0;
     this.lastThrowTime = 0;
     this.gameState = "playing";
     this.run();
@@ -190,19 +220,17 @@ showStartScreen() {
     });
   }
 
-  addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
-
-    mo.draw(this.ctx);
-
-    mo.drawFrame(this.ctx);
-
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
+addToMap(mo) {
+  if (mo.otherDirection) {
+    this.flipImage(mo);
   }
+
+  mo.draw(this.ctx);
+
+  if (mo.otherDirection) {
+    this.flipImageBack(mo);
+  }
+}
 
   flipImage(mo) {
     this.ctx.save();

@@ -65,8 +65,8 @@ function initLevel1() {
         "img/You won, you lost/Game Over.png"
       ),
     ],
-    [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
-    [new Coins(), new Coins(), new Coins(), new Coins(), new Coins(), new Coins()],
+    [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
+    [new Coins(), new Coins(), new Coins(), new Coins(), new Coins()],
   );
 }
 

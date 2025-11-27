@@ -2,7 +2,7 @@ class Coins extends MovableObject {
   width = 100;
   height = 100;
   static coinsIndex = 0;
-  static coinsPositions = [200, 600, 1000, 1400, 1800, 2200];
+  static coinsPositions = [600, 1000, 1400, 1800, 2200];
 
   Coins_Ground = [
     "img/8_coin/coin_1.png",
@@ -18,6 +18,6 @@ class Coins extends MovableObject {
         Coins.coinsIndex % Coins.coinsPositions.length
       ];
     Coins.coinsIndex++;
-     this.y = 10 + Math.random() * 320;
+     this.y = 50 + Math.random() * 130;
   }
 }
