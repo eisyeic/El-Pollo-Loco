@@ -118,6 +118,21 @@ window.addEventListener("keyup", (e) => {
 });
 
 function clearAllIntervals() {
-    for (let i = 1; i < 9999; i++) window.clearInterval(i);
+  for (let i = 1; i < 9999; i++) window.clearInterval(i);
+}
+
+function checkOrientation() {
+  const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
+  const isPortrait = window.innerHeight > window.innerWidth;
+  const rotateOverlay = document.getElementById("rotate-overlay");
+
+  if (isMobile && isPortrait) {
+    rotateOverlay.classList.remove("d-none");
+  } else {
+    rotateOverlay.classList.add("d-none");
   }
-  
+}
+
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+window.addEventListener("load", checkOrientation);

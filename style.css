@@ -119,6 +119,53 @@ h1 {
     gap: 20px;
 }
 
+.rotate-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.rotate-message {
+    text-align: center;
+    color: white;
+}
+
+.rotate-message h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
+.rotate-icon {
+    font-size: 64px;
+    animation: rotate 2s infinite;
+}
+
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+
 @font-face {
     font-family: 'the-funy-times';
     src: url('fonts/the-funy-times.ttf') format('truetype');
@@ -138,26 +185,27 @@ h1 {
     }
 }
 
-@media (max-width: 720px), (max-height: 720px) {
+@media (max-width: 720px),
+(max-height: 720px) {
     body {
         height: 100vh;
         overflow: hidden;
     }
-    
+
     h1 {
         display: none;
     }
-    
+
     .keyboard-elements {
         display: none;
     }
-    
+
     canvas {
         width: 100vw !important;
         height: 100vh !important;
         object-fit: contain;
     }
-    
+
     .game-tools {
         position: fixed !important;
         top: 20px !important;
@@ -165,7 +213,7 @@ h1 {
         z-index: 10 !important;
         display: block !important;
     }
-    
+
     .smart-elements {
         position: fixed !important;
         bottom: 20px !important;

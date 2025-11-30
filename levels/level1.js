@@ -67,7 +67,14 @@ function initLevel1() {
     ],
     [new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle(), new Bottle()],
     [new Coins(), new Coins(), new Coins(), new Coins(), new Coins()],
+    [
+      new EndImage(
+        "img/You won, you lost/You won A.png",
+        "img/You won, you lost/You Won A.png"
+      ),
+    ]
   );
 }
+
 
 initLevel1();

@@ -40,9 +40,18 @@ class World {
         this.checkBottleCollisions();
         this.takeABottle();
         this.collectCoins();
+        this.checkEndbossDefeated();
       }
     }, 1000 / 60);
   }
+
+ checkEndbossDefeated() {
+  let endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+  if (endboss && endboss.energy <= 0 && endboss.deathAnimationPlayed && this.gameState === "playing") {
+    clearAllIntervals();
+    this.gameState = "youWon";
+  }
+}
 
   collectCoins() {
     for (let i = this.level.coins.length - 1; i >= 0; i--) {
@@ -65,52 +74,66 @@ class World {
 
         if (bottle.isColliding(enemy) && !enemy.isKilled) {
           this.throwableObject.splice(i, 1);
-          enemy.killEnemy();
 
-          setTimeout(() => {
-            let index = this.level.enemies.indexOf(enemy);
-            if (index > -1) {
-              this.level.enemies.splice(index, 1);
-            }
-          }, 1000);
-
+          if (enemy instanceof Endboss) {
+            enemy.hit();
+            this.endbossBar.setPercentage(enemy.energy);
+          } else {
+            enemy.killEnemy();
+            setTimeout(() => {
+              let index = this.level.enemies.indexOf(enemy);
+              if (index > -1) {
+                this.level.enemies.splice(index, 1);
+              }
+            }, 1000);
+          }
           break;
         }
       }
     }
   }
 
-checkThrowObjects() {
-  let currentTime = Date.now();
-  if (
-    this.keyboard.STRG &&
-    currentTime - this.lastThrowTime > this.throwCooldown &&
-    this.collectedBottles > 0
-  ) {
-    let bottle = new ThrowableObject(
-      this.character.x + 100,
-      this.character.y + 50,
-      this.character.otherDirection
-    );
-    this.throwableObject.push(bottle);
-    this.collectedBottles--;
-    let percentage = (this.collectedBottles / this.totalBottles) * 100;
-    this.bottleBar.setPercentage(percentage);
-    this.lastThrowTime = currentTime;
+  checkThrowObjects() {
+    let currentTime = Date.now();
+    if (
+      this.keyboard.STRG &&
+      currentTime - this.lastThrowTime > this.throwCooldown &&
+      this.collectedBottles > 0
+    ) {
+      let bottle = new ThrowableObject(
+        this.character.x + 100,
+        this.character.y + 50,
+        this.character.otherDirection
+      );
+      this.throwableObject.push(bottle);
+      this.collectedBottles--;
+      let percentage = (this.collectedBottles / this.totalBottles) * 100;
+      this.bottleBar.setPercentage(percentage);
+      this.lastThrowTime = currentTime;
+    }
   }
-}
 
-
-  checkCollisions() {
-    this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
+ checkCollisions() {
+  this.level.enemies.forEach((enemy, index) => {
+    if (this.character.isColliding(enemy)) {
+      if (this.character.isAboveGround() && this.character.speedY < 0 && 
+          (enemy instanceof Chicken || enemy instanceof ChickenBaby) && !enemy.isKilled) {
+        enemy.killEnemy();
+        this.character.speedY = 15;
+        setTimeout(() => {
+          this.level.enemies.splice(index, 1);
+        }, 1000);
+      } else if (!enemy.isKilled) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
       }
-    });
-  }
+    }
+  });
+}
 
- takeABottle() {
+
+
+  takeABottle() {
     for (let i = this.level.bottle.length - 1; i >= 0; i--) {
       let bottle = this.level.bottle[i];
       if (this.character.isColliding(bottle)) {
@@ -131,6 +154,8 @@ checkThrowObjects() {
       this.drawGame();
     } else if (this.gameState === "gameOver") {
       this.showGameOverScreen();
+    } else if (this.gameState === "youWon") {
+      this.showYouWonScreen();
     }
 
     let self = this;
@@ -138,6 +163,20 @@ checkThrowObjects() {
       self.draw();
     });
   }
+
+ showYouWonScreen() {
+  this.drawGame();
+
+  this.addObjectsToMap(this.level.winImages);
+
+  this.ctx.fillStyle = "white";
+  this.ctx.font = "24px Arial";
+  this.ctx.fillText("Press SPACE to Restart", this.canvas.width / 3, 450);
+
+  if (this.keyboard.SPACE) {
+    this.restartGame();
+  }
+}
 
   showStartScreen() {
     this.addObjectsToMap(this.level.startImage);
@@ -208,7 +247,7 @@ checkThrowObjects() {
     this.bottleBar = new BottleBar();
     this.throwableObject = [];
     this.collectedBottles = 0;
-     this.collectedCoins = 0;
+    this.collectedCoins = 0;
     this.lastThrowTime = 0;
     this.gameState = "playing";
     this.run();
@@ -220,17 +259,17 @@ checkThrowObjects() {
     });
   }
 
-addToMap(mo) {
-  if (mo.otherDirection) {
-    this.flipImage(mo);
-  }
+  addToMap(mo) {
+    if (mo.otherDirection) {
+      this.flipImage(mo);
+    }
 
-  mo.draw(this.ctx);
+    mo.draw(this.ctx);
 
-  if (mo.otherDirection) {
-    this.flipImageBack(mo);
+    if (mo.otherDirection) {
+      this.flipImageBack(mo);
+    }
   }
-}
 
   flipImage(mo) {
     this.ctx.save();

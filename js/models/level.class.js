@@ -4,7 +4,8 @@ class Level {
   backgroundObjects;
   startImage;
   endImages;
-  level_end_x = 2260;
+  winImages;
+  level_end_x = 2600;
   bottle;
   coins;
 
@@ -15,7 +16,8 @@ class Level {
     startImage,
     endImages,
     bottle,
-    coins
+    coins,
+    winImages
   ) {
     this.enemies = enemies;
     this.clouds = clouds;
@@ -24,5 +26,7 @@ class Level {
     this.endImages = endImages;
     this.bottle = bottle;
     this.coins = coins;
+    this.winImages = winImages;
   }
 }
+

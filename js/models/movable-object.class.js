@@ -86,11 +86,11 @@ class MovableObject extends DrawableObject {
     this.img = this.imageCache[path];
     this.currentImage++;
   }
-killEnemy() {
-  this.isKilled = true;
-  
-  if (this.IMAGES_DEAD && this.IMAGES_DEAD.length > 0) {
-    this.img = this.imageCache[this.IMAGES_DEAD[0]];
+  killEnemy() {
+    this.isKilled = true;
+
+    if (this.IMAGES_DEAD && this.IMAGES_DEAD.length > 0) {
+      this.img = this.imageCache[this.IMAGES_DEAD[0]];
+    }
   }
-}
 }
