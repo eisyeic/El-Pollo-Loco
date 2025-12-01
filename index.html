@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png" sizes="48x48">
+    <link rel="stylesheet" href="legal-notice.html">
+    <link rel="stylesheet" href="privacy-policy.html">
 
     <script src="./js/models/drawable-objects.class.js"></script>
     <script src="./js/models/movable-object.class.js"></script>
@@ -50,7 +52,7 @@
     <h1>EL POLLO LOCO</h1>
     <div id="canvas-screen">
         <div class="game-tools" id="game-tools-box">
-
+            <img src="img/icons/info.png" alt="Info Icon" onclick="openInfo()">
             <img src="img/icons/fullscreen-start.png" alt="Fullscreen Start Icon" id="fullscreen-start-icon"
                 onclick="toggleFullscreen()">
             <img src="img/icons/fullscreen-end.png" alt="Fullscreen End Icon" class="d-none" id="fullscreen-end-icon"
@@ -60,6 +62,17 @@
             <img src="img/icons/sound-off.png" alt="Sound Off Icon" class="d-none" id="sound-off-icon">
 
             <img src="img/icons/restart.png" alt="Restart Icon" onclick="world.restartGame()">
+        </div>
+
+        <div class="game-info d-none" id="game-info-box">
+            <a href="instructions.html " class="menu-button"><img src="img/icons/instructions.png"
+                    alt="Instructions"></a>
+            <a href="privacy-policy.html" class="menu-button">
+                <img src="img/icons/privacy-policy.png" alt="Privacy Policy">
+            </a>
+            <a href="legal-notice.html" class="menu-button">
+                <img src="img/icons/legal-notice.png" alt="Legal Notice">
+            </a>
         </div>
 
 
@@ -77,9 +90,9 @@
         </div>
     </div>
     <div class="keyboard-elements">
-        <img src="img/icons/arrow.png" alt="Arrow Info">
-        <img src="img/icons/space.png" alt="Space Info">
         <img src="img/icons/strg.png" alt="Strg Info">
+        <img src="img/icons/space.png" alt="Space Info">
+        <img src="img/icons/arrow.png" alt="Arrow Info">
     </div>
 
 

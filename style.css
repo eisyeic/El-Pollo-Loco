@@ -150,6 +150,22 @@ h1 {
     animation: rotate 2s infinite;
 }
 
+.game-info {
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.game-info img {
+        height: 35px;
+        cursor: pointer;
+    }
+
 
 @keyframes rotate {
     0% {

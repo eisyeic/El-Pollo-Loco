@@ -136,3 +136,17 @@ function checkOrientation() {
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("orientationchange", checkOrientation);
 window.addEventListener("load", checkOrientation);
+
+
+function openInfo() {
+    document.getElementById('game-info-box').classList.toggle('d-none');
+}
+
+document.addEventListener('click', function(event) {
+    const gameInfo = document.getElementById('game-info-box');
+    const infoIcon = document.querySelector('img[onclick="openInfo()"]');
+    
+    if (!gameInfo.contains(event.target) && event.target !== infoIcon) {
+        gameInfo.classList.add('d-none');
+    }
+});
