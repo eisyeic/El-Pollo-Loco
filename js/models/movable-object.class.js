@@ -25,15 +25,13 @@ class MovableObject extends DrawableObject {
 
   isAboveGround() {
     if (this instanceof ThrowableObject) {
-      // ThrowableObject should always fall
       return true;
     } else {
       return this.y < 180;
     }
   }
 
-  // Charakter.isColliding(chicken)
-  isColliding(mo) {
+    isColliding(mo) {
     return (
       this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
       this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
@@ -43,19 +41,19 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
-    this.energy -= 0.5;
-    if (this.energy < 0) {
+    this.energy -= 0.8
+    if (this.energy < 20) {
       this.energy = 0;
     } else this.lastHit = new Date().getTime();
   }
 
   isDead() {
-    return this.energy == 0;
+    return this.energy <= 0;
   }
 
   isHurt() {
-    let timepassed = new Date().getTime() - this.lastHit; // Differenz in ms
-    timepassed = timepassed / 1000; // Differenz in s
+    let timepassed = new Date().getTime() - this.lastHit; 
+    timepassed = timepassed / 1000;
     return timepassed < 1;
   }
 

@@ -1,12 +1,16 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
 
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas);
   initTouchBtns();
+  updateSoundIcons();
+  updateSoundVolumes();
 }
+
 
 function initTouchBtns() {
   initBottleBtn();
@@ -133,20 +137,47 @@ function checkOrientation() {
   }
 }
 
+function openInfo() {
+  document.getElementById("game-info-box").classList.toggle("d-none");
+}
+
+document.addEventListener("click", function (event) {
+  const gameInfo = document.getElementById("game-info-box");
+  const infoIcon = document.querySelector('img[onclick="openInfo()"]');
+
+  if (!gameInfo.contains(event.target) && event.target !== infoIcon) {
+    gameInfo.classList.add("d-none");
+  }
+});
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('soundEnabled', soundEnabled);
+  updateSoundIcons();
+  updateSoundVolumes();
+}
+
+function updateSoundIcons() {
+  const soundOnIcon = document.getElementById("sound-on-icon");
+  const soundOffIcon = document.getElementById("sound-off-icon");
+  
+  if (soundEnabled) {
+    soundOnIcon.classList.remove("d-none");
+    soundOffIcon.classList.add("d-none");
+  } else {
+    soundOnIcon.classList.add("d-none");
+    soundOffIcon.classList.remove("d-none");
+  }
+}
+
+function updateSoundVolumes() {
+  if (world) {
+    world.soundVolume = soundEnabled ? 0.1 : 0;
+    world.backgroundMusic.volume = soundEnabled ? 0.3 : 0;
+    world.hurtSound.volume = soundEnabled ? 0.1 : 0;
+  }
+}
+
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("orientationchange", checkOrientation);
 window.addEventListener("load", checkOrientation);
-
-
-function openInfo() {
-    document.getElementById('game-info-box').classList.toggle('d-none');
-}
-
-document.addEventListener('click', function(event) {
-    const gameInfo = document.getElementById('game-info-box');
-    const infoIcon = document.querySelector('img[onclick="openInfo()"]');
-    
-    if (!gameInfo.contains(event.target) && event.target !== infoIcon) {
-        gameInfo.classList.add('d-none');
-    }
-});

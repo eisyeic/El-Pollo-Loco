@@ -18,14 +18,28 @@ class World {
   lastThrowTime = 0;
   throwCooldown = 300;
   screenlayer = false;
+  gameOverSoundsPlayed = false;
+  soundVolume = 0.1;
 
   constructor(canvas) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.hurtSound = new Audio("audio/charakter-hurt.mp3");
+    this.backgroundMusic = new Audio("audio/backgroundmusic.mp3");
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3;
     this.draw();
     this.setWorld();
     this.run();
+  }
+
+  playSound(audioPath) {
+    if (soundEnabled) {
+      let sound = new Audio(audioPath);
+      sound.volume = this.soundVolume;
+      sound.play();
+    }
   }
 
   setWorld() {
@@ -45,13 +59,19 @@ class World {
     }, 1000 / 60);
   }
 
- checkEndbossDefeated() {
-  let endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
-  if (endboss && endboss.energy <= 0 && endboss.deathAnimationPlayed && this.gameState === "playing") {
-    clearAllIntervals();
-    this.gameState = "youWon";
+  checkEndbossDefeated() {
+    let endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+    if (
+      endboss &&
+      endboss.energy <= 0 &&
+      endboss.deathAnimationPlayed &&
+      this.gameState === "playing"
+    ) {
+      clearAllIntervals();
+      this.backgroundMusic.pause();
+      this.gameState = "youWon";
+    }
   }
-}
 
   collectCoins() {
     for (let i = this.level.coins.length - 1; i >= 0; i--) {
@@ -61,6 +81,7 @@ class World {
         this.collectedCoins++;
         let percentage = (this.collectedCoins / this.totalCoins) * 100;
         this.coinsBar.setPercentage(percentage);
+        this.playSound("audio/coins-sound.mp3");
       }
     }
   }
@@ -77,9 +98,11 @@ class World {
 
           if (enemy instanceof Endboss) {
             enemy.hit();
+            this.playSound("audio/chicken-hurt.mp3");
             this.endbossBar.setPercentage(enemy.energy);
           } else {
             enemy.killEnemy();
+            this.playSound("audio/chicken-hurt.mp3");
             setTimeout(() => {
               let index = this.level.enemies.indexOf(enemy);
               if (index > -1) {
@@ -110,28 +133,39 @@ class World {
       let percentage = (this.collectedBottles / this.totalBottles) * 100;
       this.bottleBar.setPercentage(percentage);
       this.lastThrowTime = currentTime;
+      this.playSound("audio/throw.mp3");
     }
   }
 
- checkCollisions() {
-  this.level.enemies.forEach((enemy, index) => {
-    if (this.character.isColliding(enemy)) {
-      if (this.character.isAboveGround() && this.character.speedY < 0 && 
-          (enemy instanceof Chicken || enemy instanceof ChickenBaby) && !enemy.isKilled) {
-        enemy.killEnemy();
-        this.character.speedY = 15;
-        setTimeout(() => {
-          this.level.enemies.splice(index, 1);
-        }, 1000);
-      } else if (!enemy.isKilled) {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+  checkCollisions() {
+    this.level.enemies.forEach((enemy, index) => {
+      if (this.character.isColliding(enemy)) {
+        if (
+          this.character.isAboveGround() &&
+          this.character.speedY < 0 &&
+          (enemy instanceof Chicken || enemy instanceof ChickenBaby) &&
+          !enemy.isKilled
+        ) {
+          enemy.killEnemy();
+          this.playSound("audio/chicken-hurt.mp3");
+          this.character.speedY = 15;
+          setTimeout(() => {
+            let index = this.level.enemies.indexOf(enemy);
+            if (index > -1 && !(enemy instanceof Endboss)) {
+              this.level.enemies.splice(index, 1);
+            }
+          }, 1000);
+        } else if (!enemy.isKilled) {
+          this.character.hit();
+          if (this.hurtSound.paused && soundEnabled) {
+            this.hurtSound.volume = soundEnabled ? this.soundVolume : 0;
+            this.hurtSound.play();
+          }
+          this.statusBar.setPercentage(this.character.energy);
+        }
       }
-    }
-  });
-}
-
-
+    });
+  }
 
   takeABottle() {
     for (let i = this.level.bottle.length - 1; i >= 0; i--) {
@@ -141,6 +175,7 @@ class World {
         this.collectedBottles++;
         let percentage = (this.collectedBottles / this.totalBottles) * 100;
         this.bottleBar.setPercentage(percentage);
+        this.playSound("audio/bottle.mp3");
       }
     }
   }
@@ -164,19 +199,51 @@ class World {
     });
   }
 
- showYouWonScreen() {
-  this.drawGame();
+  showYouWonScreen() {
+    this.drawGame();
+    this.addObjectsToMap(this.level.winImages);
+    this.showCoinsResults();
+    this.showRestartText();
 
-  this.addObjectsToMap(this.level.winImages);
+    if (!this.winSoundPlayed) {
+      this.backgroundMusic.pause();
+      this.playSound("audio/win.mp3");
+      this.winSoundPlayed = true;
+    }
 
-  this.ctx.fillStyle = "white";
-  this.ctx.font = "24px Arial";
-  this.ctx.fillText("Press SPACE to Restart", this.canvas.width / 3, 450);
-
-  if (this.keyboard.SPACE) {
-    this.restartGame();
+    if (this.keyboard.SPACE) {
+      this.restartGame();
+    }
+    if (this.keyboard.STRG) {
+      this.goToHome();
+    }
   }
-}
+
+  goToHome() {
+    this.restartGame();
+    this.backgroundMusic.pause();
+    this.gameState = "start";
+  }
+
+  showCoinsResults() {
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "bold 36px Arial";
+    const coinsText = `Coins: ${this.collectedCoins}/${this.totalCoins}`;
+    const coinsTextWidth = this.ctx.measureText(coinsText).width;
+    this.ctx.fillText(coinsText, (this.canvas.width - coinsTextWidth) / 2, 160);
+  }
+
+  showRestartText() {
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "24px Arial";
+    const restartText = "Press SPACE to Restart or STRG to Home";
+    const restartTextWidth = this.ctx.measureText(restartText).width;
+    this.ctx.fillText(
+      restartText,
+      (this.canvas.width - restartTextWidth) / 2,
+      450
+    );
+  }
 
   showStartScreen() {
     this.addObjectsToMap(this.level.startImage);
@@ -194,6 +261,7 @@ class World {
 
     if (this.keyboard.SPACE) {
       this.gameState = "playing";
+      this.backgroundMusic.play();
     }
   }
 
@@ -227,10 +295,24 @@ class World {
 
     this.ctx.fillStyle = "white";
     this.ctx.font = "24px Arial";
-    this.ctx.fillText("Press SPACE to Restart", this.canvas.width / 3, 450);
+    this.ctx.fillText(
+      "Press SPACE to Restart or STRG to Home",
+      this.canvas.width / 4,
+      450
+    );
+
+    if (!this.gameOverSoundsPlayed) {
+      this.backgroundMusic.pause();
+      this.playSound("audio/game-over-kid-voice.mp3");
+      this.playSound("audio/game-over-song.mp3");
+      this.gameOverSoundsPlayed = true;
+    }
 
     if (this.keyboard.SPACE) {
       this.restartGame();
+    }
+    if (this.keyboard.STRG) {
+      this.goToHome();
     }
   }
 
@@ -250,6 +332,9 @@ class World {
     this.collectedCoins = 0;
     this.lastThrowTime = 0;
     this.gameState = "playing";
+    this.gameOverSoundsPlayed = false;
+    this.winSoundPlayed = false;
+    this.backgroundMusic.play();
     this.run();
   }
 
