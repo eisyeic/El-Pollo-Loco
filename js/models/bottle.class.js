@@ -9,6 +9,9 @@ class Bottle extends MovableObject {
     "img/6_salsa_bottle/2_salsa_bottle_on_ground.png",
   ];
 
+  /**
+   * Creates a new Bottle instance with automatic positioning
+   */
   constructor() {
     super().loadImage(
       this.Bottle_Ground[Bottle.bottleIndex % this.Bottle_Ground.length]

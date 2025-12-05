@@ -60,6 +60,9 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
 
+  /**
+   * Creates a new Endboss instance and initializes animations
+   */
   constructor() {
     super().loadImage(this.IMAGES_ALERT[0]);
     this.loadImages(this.IMAGES_ALERT);
@@ -71,6 +74,9 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Handles when the endboss gets hit, reducing energy
+   */
   hit() {
     this.energy -= 20;
     if (this.energy < 0) {
@@ -80,6 +86,10 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Checks if the endboss is visible on screen
+   * @returns {boolean} True if the endboss is visible
+   */
   isVisible() {
     return (
       world &&
@@ -89,6 +99,9 @@ class Endboss extends MovableObject {
     );
   }
 
+  /**
+   * Starts the endboss animation loop
+   */
   animate() {
     setInterval(() => {
       let currentlyVisible = this.isVisible();
@@ -112,6 +125,9 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Handles endboss death animation when energy reaches zero
+   */
   bossEnergyZero() {
     if (!this.deathAnimationPlayed && !this.deathInterval) {
       this.deathFrameIndex = 0;
@@ -133,10 +149,17 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Handles endboss hurt animation
+   */
   bossEnergyHurt() {
     this.playAnimation(this.IMAGES_HURT);
   }
 
+  /**
+   * Handles endboss attack behavior
+   * @param {boolean} currentlyVisible - Whether the endboss is currently visible
+   */
   bossAttack(currentlyVisible) {
     if (!this.wasVisible) {
       this.alertFrameCount = 0;

@@ -1,4 +1,8 @@
 class StartImage extends DrawableObject {
+  /**
+   * Creates a new StartImage instance
+   * @param {string} imagePath - Path to the start screen image
+   */
   constructor(imagePath) {
     super();
     this.loadImage(imagePath);

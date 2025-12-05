@@ -3,6 +3,9 @@ let world;
 let keyboard = new Keyboard();
 let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
 
+/**
+ * Initializes the game
+ */
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas);
@@ -12,13 +15,19 @@ function init() {
 }
 
 
+/**
+ * Initializes all touch buttons
+ */
 function initTouchBtns() {
   initBottleBtn();
-  initJUmpBtn();
+  initJumpBtn();
   initRightBtn();
   initLeftBtn();
 }
 
+/**
+ * Initializes the bottle throw button
+ */
 function initBottleBtn() {
   const btnBottle = document.getElementById("btn-bottle");
 
@@ -34,7 +43,10 @@ function initBottleBtn() {
   }
 }
 
-function initJUmpBtn() {
+/**
+ * Initializes the jump button
+ */
+function initJumpBtn() {
   const btnJump = document.getElementById("btn-jump");
 
   if (btnJump) {
@@ -49,6 +61,9 @@ function initJUmpBtn() {
   }
 }
 
+/**
+ * Initializes the right movement button
+ */
 function initRightBtn() {
   const btnRight = document.getElementById("btn-right");
 
@@ -64,6 +79,9 @@ function initRightBtn() {
   }
 }
 
+/**
+ * Initializes the left movement button
+ */
 function initLeftBtn() {
   const btnLeft = document.getElementById("btn-left");
 
@@ -121,10 +139,16 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
+/**
+ * Clears all active intervals
+ */
 function clearAllIntervals() {
   for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
+/**
+ * Checks screen orientation and shows rotate overlay if needed
+ */
 function checkOrientation() {
   const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
   const isPortrait = window.innerHeight > window.innerWidth;
@@ -137,6 +161,9 @@ function checkOrientation() {
   }
 }
 
+/**
+ * Opens or closes the info menu
+ */
 function openInfo() {
   document.getElementById("game-info-box").classList.toggle("d-none");
 }
@@ -150,6 +177,9 @@ document.addEventListener("click", function (event) {
   }
 });
 
+/**
+ * Toggles sound on/off
+ */
 function toggleSound() {
   soundEnabled = !soundEnabled;
   localStorage.setItem('soundEnabled', soundEnabled);
@@ -157,6 +187,9 @@ function toggleSound() {
   updateSoundVolumes();
 }
 
+/**
+ * Updates sound icons based on sound status
+ */
 function updateSoundIcons() {
   const soundOnIcon = document.getElementById("sound-on-icon");
   const soundOffIcon = document.getElementById("sound-off-icon");
@@ -170,6 +203,9 @@ function updateSoundIcons() {
   }
 }
 
+/**
+ * Updates volume for all sounds
+ */
 function updateSoundVolumes() {
   if (world) {
     world.soundVolume = soundEnabled ? 0.1 : 0;

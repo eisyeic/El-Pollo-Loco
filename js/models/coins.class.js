@@ -9,6 +9,9 @@ class Coins extends MovableObject {
     "img/8_coin/coin_2.png",
   ];
 
+  /**
+   * Creates a new Coins instance with automatic positioning and random height
+   */
   constructor() {
     super().loadImage(
       this.Coins_Ground[Coins.coinsIndex % this.Coins_Ground.length]

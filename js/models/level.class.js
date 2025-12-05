@@ -9,6 +9,17 @@ class Level {
   bottle;
   coins;
 
+  /**
+   * Creates a new Level instance with all game objects
+   * @param {Array} enemies - Array of enemy objects
+   * @param {Array} clouds - Array of cloud objects
+   * @param {Array} backgroundObjects - Array of background objects
+   * @param {Object} startImage - Start screen image object
+   * @param {Array} endImages - Array of end screen images
+   * @param {Array} bottle - Array of bottle objects
+   * @param {Array} coins - Array of coin objects
+   * @param {Array} winImages - Array of win screen images
+   */
   constructor(
     enemies,
     clouds,

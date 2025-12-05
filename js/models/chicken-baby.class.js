@@ -11,6 +11,9 @@ class ChickenBaby extends MovableObject {
 
   IMAGES_DEAD = ["img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
+  /**
+   * Creates a new ChickenBaby instance with random positioning and speed
+   */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -21,6 +24,9 @@ class ChickenBaby extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the chicken baby animation and movement loops
+   */
   animate() {
     setInterval(() => {
       if (!this.isKilled) {

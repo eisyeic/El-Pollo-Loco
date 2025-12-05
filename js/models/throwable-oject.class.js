@@ -14,6 +14,12 @@ class ThrowableObject extends MovableObject {
         "img/6_salsa_bottle/bottle_splash/4_bottle_splash.png",
     ];
 
+    /**
+     * Creates a new ThrowableObject instance
+     * @param {number} x - X coordinate position
+     * @param {number} y - Y coordinate position
+     * @param {boolean} direction - Throw direction (true for left, false for right)
+     */
     constructor(x, y, direction) {
         super().loadImage(this.Bottle_Rotation[0]);
         this.loadImages(this.Bottle_Rotation);
@@ -26,6 +32,9 @@ class ThrowableObject extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Initiates the throwing motion with gravity and horizontal movement
+     */
     throw() {
         this.speedY = 30;
         this.applyGravity();
@@ -34,6 +43,9 @@ class ThrowableObject extends MovableObject {
         }, 25);
     }
 
+    /**
+     * Starts the bottle rotation animation
+     */
     animate() {
         setInterval(() => {
             this.playAnimation(this.Bottle_Rotation);

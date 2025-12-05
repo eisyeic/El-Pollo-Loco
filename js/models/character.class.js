@@ -75,6 +75,9 @@ class Character extends MovableObject {
     bottom: 10,
   };
 
+  /**
+   * Creates a new Character instance and initializes animations
+   */
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_IDLE);
@@ -88,58 +91,108 @@ class Character extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts character animations
+   */
   animate() {
+    this.startMovementLoop();
+    this.startAnimationLoop();
+  }
+
+  /**
+   * Starts the movement loop
+   */
+  startMovementLoop() {
     setInterval(() => {
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-        this.lastMovement = Date.now();
-      }
-
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.lastMovement = Date.now();
-      }
-
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-        this.lastMovement = Date.now();
-      }
-
-      this.world.camera_x = Math.max(-this.x + 100, -2160);
+      this.handleMovement();
+      this.updateCamera();
     }, 1000 / 60);
+  }
 
+  /**
+   * Handles character movement
+   */
+  handleMovement() {
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      this.moveRight();
+      this.otherDirection = false;
+      this.lastMovement = Date.now();
+    }
+
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.moveLeft();
+      this.otherDirection = true;
+      this.lastMovement = Date.now();
+    }
+
+    if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+      this.jump();
+      this.lastMovement = Date.now();
+    }
+  }
+
+  /**
+   * Updates camera position
+   */
+  updateCamera() {
+    this.world.camera_x = Math.max(-this.x + 100, -2160);
+  }
+
+  /**
+   * Starts the animation loop
+   */
+  startAnimationLoop() {
     setInterval(() => {
-      if (this.isIdle()) {
-        if (Date.now() - this.lastMovement > 5000) {
-          this.playAnimation(this.IMAGES_LONG_IDLE);
-        } else {
-          this.playAnimation(this.IMAGES_IDLE);
-        }
-      }
-      if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-        if (!this.deathSoundPlayed) {
-          this.world.playSound("audio/dead.mp3");
-          this.deathSoundPlayed = true;
-        }
-        setTimeout(() => {
-          clearAllIntervals();
-          this.world.gameState = "gameOver";
-        }, 1000);
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-      } else {
-        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-          this.playAnimation(this.IMAGES_WALKING);
-        }
-      }
+      this.handleAnimations();
     }, 50);
   }
 
+  /**
+   * Handles all character animations
+   */
+  handleAnimations() {
+    if (this.isIdle()) {
+      this.handleIdleAnimation();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.isDead()) {
+      this.handleDeathAnimation();
+    } else if (this.isAboveGround()) {
+      this.playAnimation(this.IMAGES_JUMPING);
+    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
+  }
+
+  /**
+   * Handles idle animation
+   */
+  handleIdleAnimation() {
+    if (Date.now() - this.lastMovement > 5000) {
+      this.playAnimation(this.IMAGES_LONG_IDLE);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
+  }
+
+  /**
+   * Handles death animation
+   */
+  handleDeathAnimation() {
+    this.playAnimation(this.IMAGES_DEAD);
+    if (!this.deathSoundPlayed) {
+      this.world.playSound("audio/dead.mp3");
+      this.deathSoundPlayed = true;
+    }
+    setTimeout(() => {
+      clearAllIntervals();
+      this.world.gameState = "gameOver";
+    }, 1000);
+  }
+
+  /**
+   * Makes the character jump
+   */
   jump() {
     this.speedY = 30;
     this.world.playSound("audio/jump.mp3");
