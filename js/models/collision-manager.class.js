@@ -66,7 +66,7 @@ class CollisionManager {
    */
   handleBottleHit(bottleIndex, enemy) {
     this.world.throwableObject.splice(bottleIndex, 1);
-    
+
     if (enemy instanceof Endboss) {
       this.handleEndbossHit(enemy);
     } else {
@@ -128,10 +128,12 @@ class CollisionManager {
    * @returns {boolean} True if jumping is possible
    */
   canJumpOnEnemy(enemy) {
-    return this.world.character.isAboveGround() &&
-           this.world.character.speedY < 0 &&
-           (enemy instanceof Chicken || enemy instanceof ChickenBaby) &&
-           !enemy.isKilled;
+    return (
+      this.world.character.isAboveGround() &&
+      this.world.character.speedY < 0 &&
+      (enemy instanceof Chicken || enemy instanceof ChickenBaby) &&
+      !enemy.isKilled
+    );
   }
 
   /**
@@ -175,14 +177,57 @@ class CollisionManager {
   }
 
   /**
-   * Handles bottle collection
+   * Handles bottle collection and tracks position for respawn
    * @param {number} bottleIndex - Index of the bottle
    */
   handleBottleCollection(bottleIndex) {
+    let bottle = this.world.level.bottle[bottleIndex];
+    let originalPosition = this.getBottleOriginalPosition(bottle);
+
+    this.removeBottleFromLevel(bottleIndex);
+    this.updateBottleCount();
+    this.storeBottlePosition(originalPosition);
+  }
+
+  /**
+   * Gets the original position of a bottle
+   * @param {Bottle} bottle - The bottle object
+   * @returns {Object} Original position {x, y}
+   */
+  getBottleOriginalPosition(bottle) {
+    return {
+      x: bottle.originalX || bottle.x,
+      y: bottle.originalY || bottle.y,
+    };
+  }
+
+  /**
+   * Removes bottle from level and plays sound
+   * @param {number} bottleIndex - Index of the bottle
+   */
+  removeBottleFromLevel(bottleIndex) {
     this.world.level.bottle.splice(bottleIndex, 1);
-    this.world.collectedBottles++;
-    let percentage = (this.world.collectedBottles / this.world.totalBottles) * 100;
-    this.world.bottleBar.setPercentage(percentage);
     this.world.playSound("audio/bottle.mp3");
+  }
+
+  /**
+   * Updates bottle count and progress bar
+   */
+  updateBottleCount() {
+    this.world.collectedBottles++;
+    let percentage =
+      (this.world.collectedBottles / this.world.totalBottles) * 100;
+    this.world.bottleBar.setPercentage(percentage);
+  }
+
+  /**
+   * Stores bottle position for respawn
+   * @param {Object} position - Position {x, y}
+   */
+  storeBottlePosition(position) {
+    if (!this.world.collectedBottlePositions) {
+      this.world.collectedBottlePositions = [];
+    }
+    this.world.collectedBottlePositions.push(position);
   }
 }

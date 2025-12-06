@@ -84,27 +84,32 @@ class ScreenManager {
    * Draws start screen text
    */
   drawStartText() {
-    this.world.ctx.fillStyle = "white";
-    this.world.ctx.font = "24px Arial";
+  this.world.ctx.fillStyle = "white";
+  this.world.ctx.font = "24px Arial";
 
-    const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
-    const startText = isMobile ? "Press Jump to Start" : "Press SPACE to Start";
+  const isTouchDevice = 'ontouchstart' in window;
+  const startText = isTouchDevice ? "Press Jump to Start" : "Press SPACE to Start";
 
-    const textWidth = this.world.ctx.measureText(startText).width;
-    const x = (this.world.canvas.width - textWidth) / 2;
+  const textWidth = this.world.ctx.measureText(startText).width;
+  const x = (this.world.canvas.width - textWidth) / 2;
 
-    this.world.ctx.fillText(startText, x, 450);
-  }
+  this.world.ctx.fillText(startText, x, 450);
+}
+
 
   /**
    * Handles input on start screen
    */
-  handleStartInput() {
-    if (this.world.keyboard.SPACE) {
-      this.world.gameState = "playing";
+ handleStartInput() {
+  if (this.world.keyboard.SPACE) {
+    this.world.gameState = "playing";
+    try {
       this.world.backgroundMusic.play();
+    } catch (error) {
+      console.log("Audio play failed:", error);
     }
   }
+}
 
   /**
    * Shows the game over screen

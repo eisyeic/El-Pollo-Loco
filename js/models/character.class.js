@@ -4,6 +4,10 @@ class Character extends MovableObject {
   width = 150;
   speed = 10;
   deathSoundPlayed = false;
+  jumpStarted = false;
+  jumpStartIndex = 0;
+  jumpLandIndex = 0;
+  isLanding = false;
 
   IMAGES_IDLE = [
     "img/2_character_pepe/1_idle/idle/I-1.png",
@@ -151,16 +155,119 @@ class Character extends MovableObject {
    * Handles all character animations
    */
   handleAnimations() {
-    if (this.isIdle()) {
-      this.handleIdleAnimation();
+    if (this.isDead()) {
+      this.handleDeathAnimation();
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
-    } else if (this.isDead()) {
-      this.handleDeathAnimation();
     } else if (this.isAboveGround()) {
-      this.playAnimation(this.IMAGES_JUMPING);
+      this.handleJumpAnimation();
     } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
       this.playAnimation(this.IMAGES_WALKING);
+    } else if (this.isIdle()) {
+      this.handleIdleAnimation();
+    }
+  }
+
+  /**
+   * Handles jump animation with proper phases
+   */
+  /**
+   * Handles jump animation with proper phases
+   */
+  handleJumpAnimation() {
+    if (this.isJumpStartPhase()) {
+      this.playJumpStartAnimation();
+    } else if (this.isJumpUpPhase()) {
+      this.playJumpUpAnimation();
+    } else if (this.isJumpDownPhase()) {
+      this.playJumpDownAnimation();
+    } else if (this.isJumpLandPhase()) {
+      this.playJumpLandAnimation();
+    } else {
+      this.playJumpFallbackAnimation();
+    }
+
+    this.resetJumpAnimationIfGrounded();
+  }
+
+  /**
+   * Checks if character is in jump start phase
+   */
+  isJumpStartPhase() {
+    return !this.jumpStarted && this.jumpStartIndex < 8;
+  }
+
+  /**
+   * Checks if character is in jump up phase
+   */
+  isJumpUpPhase() {
+    return this.speedY > 0;
+  }
+
+  /**
+   * Checks if character is in jump down phase
+   */
+  isJumpDownPhase() {
+    return this.speedY <= 0 && !this.isLanding;
+  }
+
+  /**
+   * Checks if character is in jump land phase
+   */
+  isJumpLandPhase() {
+    return this.isLanding && this.jumpLandIndex < 6;
+  }
+
+  /**
+   * Plays jump start animation
+   */
+  playJumpStartAnimation() {
+    let imageIndex = Math.floor(this.jumpStartIndex / 2);
+    this.img = this.imageCache[this.IMAGES_JUMPING[imageIndex]];
+    this.jumpStartIndex++;
+    if (this.jumpStartIndex >= 8) this.jumpStarted = true;
+  }
+
+  /**
+   * Plays jump up animation
+   */
+  playJumpUpAnimation() {
+    this.img = this.imageCache[this.IMAGES_JUMPING[4]];
+  }
+
+  /**
+   * Plays jump down animation
+   */
+  playJumpDownAnimation() {
+    this.img = this.imageCache[this.IMAGES_JUMPING[5]];
+    if (this.y > 150) this.isLanding = true;
+  }
+
+  /**
+   * Plays jump land animation
+   */
+  playJumpLandAnimation() {
+    let imageIndex = 6 + Math.floor(this.jumpLandIndex / 2);
+    this.img = this.imageCache[this.IMAGES_JUMPING[imageIndex]];
+    this.jumpLandIndex++;
+  }
+
+  /**
+   * Plays fallback jump animation
+   */
+  playJumpFallbackAnimation() {
+    this.img = this.imageCache[this.IMAGES_JUMPING[8]];
+  }
+
+  /**
+   * Resets jump animation variables when grounded
+   */
+  resetJumpAnimationIfGrounded() {
+    if (!this.isAboveGround()) {
+      this.jumpStarted = false;
+      this.jumpStartIndex = 0;
+      this.jumpLandIndex = 0;
+      this.isLanding = false;
     }
   }
 
@@ -168,7 +275,7 @@ class Character extends MovableObject {
    * Handles idle animation
    */
   handleIdleAnimation() {
-    if (Date.now() - this.lastMovement > 5000) {
+    if (Date.now() - this.lastMovement > 8000) {
       this.playAnimation(this.IMAGES_LONG_IDLE);
     } else {
       this.playAnimation(this.IMAGES_IDLE);

@@ -12,6 +12,8 @@ class Endboss extends MovableObject {
   wasVisible = false;
   alertFrameCount = 0;
   isNearCharacter = false;
+  currentAnimationType = null;
+  lastAnimationType = null;
   offset = {
     top: 80,
     left: 50,
@@ -60,9 +62,6 @@ class Endboss extends MovableObject {
     "img/4_enemie_boss_chicken/5_dead/G26.png",
   ];
 
-  /**
-   * Creates a new Endboss instance and initializes animations
-   */
   constructor() {
     super().loadImage(this.IMAGES_ALERT[0]);
     this.loadImages(this.IMAGES_ALERT);
@@ -74,9 +73,6 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
-  /**
-   * Handles when the endboss gets hit, reducing energy
-   */
   hit() {
     this.energy -= 20;
     if (this.energy < 0) {
@@ -86,10 +82,6 @@ class Endboss extends MovableObject {
     }
   }
 
-  /**
-   * Checks if the endboss is visible on screen
-   * @returns {boolean} True if the endboss is visible
-   */
   isVisible() {
     return (
       world &&
@@ -99,14 +91,11 @@ class Endboss extends MovableObject {
     );
   }
 
-  /**
-   * Starts the endboss animation loop
-   */
   animate() {
     setInterval(() => {
       let currentlyVisible = this.isVisible();
       this.isNearCharacter =
-        world && world.character && Math.abs(this.x - world.character.x) < 100;
+        world && world.character && Math.abs(this.x - world.character.x) < 150;
 
       if (this.energy <= 0) {
         this.bossEnergyZero();
@@ -125,11 +114,10 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
-  /**
-   * Handles endboss death animation when energy reaches zero
-   */
   bossEnergyZero() {
     if (!this.deathAnimationPlayed && !this.deathInterval) {
+      this.currentAnimationType = "death";
+      this.currentImage = 0;
       this.deathFrameIndex = 0;
       this.loadImage(this.IMAGES_DEAD[0]);
 
@@ -149,34 +137,79 @@ class Endboss extends MovableObject {
     }
   }
 
-  /**
-   * Handles endboss hurt animation
-   */
   bossEnergyHurt() {
-    this.playAnimation(this.IMAGES_HURT);
+    this.playAnimationWithReset(this.IMAGES_HURT, "hurt");
   }
 
-  /**
-   * Handles endboss attack behavior
-   * @param {boolean} currentlyVisible - Whether the endboss is currently visible
-   */
-  bossAttack(currentlyVisible) {
-    if (!this.wasVisible) {
-      this.alertFrameCount = 0;
-    }
+ bossAttack(currentlyVisible) {
+  this.resetAlertCountIfNeeded();
+  let distance = this.getDistanceToCharacter();
+  this.handleBossAttackBehavior(distance);
+}
 
-    if (this.isNearCharacter) {
-      this.speed = 8;
-      this.playAnimation(this.IMAGES_ATTACK);
-      this.moveLeft();
-    } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
-      this.speed = 2;
-      this.playAnimation(this.IMAGES_ALERT);
-      this.alertFrameCount++;
-    } else {
-      this.speed = 2;
-      this.playAnimation(this.IMAGES_WALKING);
-      this.moveLeft();
+/**
+ * Resets alert frame count if boss wasn't visible before
+ */
+resetAlertCountIfNeeded() {
+  if (!this.wasVisible) {
+    this.alertFrameCount = 0;
+  }
+}
+
+/**
+ * Gets distance between boss and character
+ * @returns {number} Distance to character
+ */
+getDistanceToCharacter() {
+  return Math.abs(this.x - world.character.x);
+}
+
+/**
+ * Handles boss behavior based on distance to character
+ * @param {number} distance - Distance to character
+ */
+handleBossAttackBehavior(distance) {
+  if (distance < 80) {
+    this.performCloseAttack();
+  } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
+    this.performAlertBehavior();
+  } else {
+    this.performChaseBehavior();
+  }
+}
+
+/**
+ * Performs close range attack
+ */
+performCloseAttack() {
+  this.speed = 0;
+  this.playAnimationWithReset(this.IMAGES_ATTACK, "attack");
+}
+
+/**
+ * Performs alert behavior
+ */
+performAlertBehavior() {
+  this.speed = 0;
+  this.playAnimationWithReset(this.IMAGES_ALERT, "alert");
+  this.alertFrameCount++;
+}
+
+/**
+ * Performs chase behavior
+ */
+performChaseBehavior() {
+  this.speed = 4;
+  this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
+  this.moveLeft();
+}
+
+
+  playAnimationWithReset(images, animationType) {
+    if (this.lastAnimationType !== animationType) {
+      this.currentImage = 0;
+      this.lastAnimationType = animationType;
     }
+    this.playAnimation(images);
   }
 }

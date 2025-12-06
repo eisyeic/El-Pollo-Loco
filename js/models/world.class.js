@@ -100,7 +100,12 @@ class World {
    * @returns {boolean} True if defeated
    */
   isEndbossDefeated(endboss) {
-    return endboss && endboss.energy <= 0 && endboss.deathAnimationPlayed && this.gameState === "playing";
+    return (
+      endboss &&
+      endboss.energy <= 0 &&
+      endboss.deathAnimationPlayed &&
+      this.gameState === "playing"
+    );
   }
 
   /**
@@ -111,8 +116,6 @@ class World {
     this.backgroundMusic.pause();
     this.gameState = "youWon";
   }
-
-
 
   /**
    * Checks and handles throwing objects
@@ -130,26 +133,52 @@ class World {
    * @returns {boolean} True if throwing is possible
    */
   canThrowBottle(currentTime) {
-    return this.keyboard.STRG && 
-           currentTime - this.lastThrowTime > this.throwCooldown && 
-           this.collectedBottles > 0;
+    return (
+      this.keyboard.STRG &&
+      currentTime - this.lastThrowTime > this.throwCooldown &&
+      this.collectedBottles > 0
+    );
   }
 
-  /**
-   * Throws a bottle
-   * @param {number} currentTime - Current time
-   */
-  throwBottle(currentTime) {
-    let bottle = new ThrowableObject(
-      this.character.x + 100,
-      this.character.y + 50,
-      this.character.otherDirection
-    );
-    this.throwableObject.push(bottle);
-    this.updateBottleCount();
-    this.lastThrowTime = currentTime;
-    this.playSound("audio/throw.mp3");
+/**
+ * Throws a bottle and schedules ground bottle respawn
+ * @param {number} currentTime - Current time
+ */
+throwBottle(currentTime) {
+  let bottle = new ThrowableObject(
+    this.character.x + 100,
+    this.character.y + 50,
+    this.character.otherDirection
+  );
+  this.throwableObject.push(bottle);
+  this.updateBottleCount();
+  
+  // Schedule respawn of a bottle at original position
+  if (this.collectedBottlePositions && this.collectedBottlePositions.length > 0) {
+    let position = this.collectedBottlePositions.shift();
+    this.scheduleBottleRespawn(position.x, position.y);
   }
+  
+  this.lastThrowTime = currentTime;
+  this.playSound("audio/throw.mp3");
+}
+
+/**
+ * Schedules bottle respawn at ground position after 8 seconds
+ * @param {number} originalX - Original X position
+ * @param {number} originalY - Original Y position
+ */
+scheduleBottleRespawn(originalX, originalY) {
+  setTimeout(() => {
+    let newBottle = new Bottle();
+    newBottle.x = originalX;
+    newBottle.y = originalY;
+    newBottle.originalX = originalX;
+    newBottle.originalY = originalY;
+    this.level.bottle.push(newBottle);
+  }, 8000);
+}
+
 
   /**
    * Updates bottle count after throwing
@@ -159,8 +188,6 @@ class World {
     let percentage = (this.collectedBottles / this.totalBottles) * 100;
     this.bottleBar.setPercentage(percentage);
   }
-
-
 
   /**
    * Main draw function that renders the game
@@ -228,8 +255,6 @@ class World {
     this.addToMap(this.coinsBar);
     this.addToMap(this.bottleBar);
   }
-
-
 
   /**
    * Restarts the game
@@ -323,5 +348,3 @@ class World {
     this.ctx.restore();
   }
 }
-
-

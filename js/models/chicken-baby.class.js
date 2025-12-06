@@ -17,7 +17,7 @@ class ChickenBaby extends MovableObject {
   constructor() {
     super().loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_DEAD); // Hinzufügen
+    this.loadImages(this.IMAGES_DEAD);
 
     this.x = 500 + Math.random() * 2000;
     this.speed = 0.15 + Math.random() * 0.5;
@@ -30,7 +30,6 @@ class ChickenBaby extends MovableObject {
   animate() {
     setInterval(() => {
       if (!this.isKilled) {
-        // isKilled statt isDead
         this.moveLeft();
         this.otherDirection = false;
       }
@@ -38,7 +37,6 @@ class ChickenBaby extends MovableObject {
 
     setInterval(() => {
       if (!this.isKilled) {
-        // isKilled statt isDead
         this.playAnimation(this.IMAGES_WALKING);
       }
     }, 150);

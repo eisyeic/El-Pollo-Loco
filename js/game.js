@@ -150,14 +150,16 @@ function clearAllIntervals() {
  * Checks screen orientation and shows rotate overlay if needed
  */
 function checkOrientation() {
-  const isMobile = window.innerWidth <= 720 || window.innerHeight <= 720;
+  const isTouchDevice = 'ontouchstart' in window;
   const isPortrait = window.innerHeight > window.innerWidth;
   const rotateOverlay = document.getElementById("rotate-overlay");
 
-  if (isMobile && isPortrait) {
-    rotateOverlay.classList.remove("d-none");
-  } else {
-    rotateOverlay.classList.add("d-none");
+  if (rotateOverlay) {
+    if (isTouchDevice && isPortrait) {
+      rotateOverlay.classList.remove("d-none");
+    } else {
+      rotateOverlay.classList.add("d-none");
+    }
   }
 }
 
