@@ -141,69 +141,69 @@ class Endboss extends MovableObject {
     this.playAnimationWithReset(this.IMAGES_HURT, "hurt");
   }
 
- bossAttack(currentlyVisible) {
-  this.resetAlertCountIfNeeded();
-  let distance = this.getDistanceToCharacter();
-  this.handleBossAttackBehavior(distance);
-}
-
-/**
- * Resets alert frame count if boss wasn't visible before
- */
-resetAlertCountIfNeeded() {
-  if (!this.wasVisible) {
-    this.alertFrameCount = 0;
+  bossAttack(currentlyVisible) {
+    this.resetAlertCountIfNeeded();
+    let distance = this.getDistanceToCharacter();
+    this.handleBossAttackBehavior(distance);
   }
-}
 
-/**
- * Gets distance between boss and character
- * @returns {number} Distance to character
- */
-getDistanceToCharacter() {
-  return Math.abs(this.x - world.character.x);
-}
-
-/**
- * Handles boss behavior based on distance to character
- * @param {number} distance - Distance to character
- */
-handleBossAttackBehavior(distance) {
-  if (distance < 80) {
-    this.performCloseAttack();
-  } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
-    this.performAlertBehavior();
-  } else {
-    this.performChaseBehavior();
+  /**
+   * Resets alert frame count if boss wasn't visible before
+   */
+  resetAlertCountIfNeeded() {
+    if (!this.wasVisible) {
+      this.alertFrameCount = 0;
+    }
   }
-}
 
-/**
- * Performs close range attack
- */
-performCloseAttack() {
-  this.speed = 0;
-  this.playAnimationWithReset(this.IMAGES_ATTACK, "attack");
-}
+  /**
+   * Gets distance between boss and character
+   * @returns {number} Distance to character
+   */
+  getDistanceToCharacter() {
+    return Math.abs(this.x - world.character.x);
+  }
 
-/**
- * Performs alert behavior
- */
-performAlertBehavior() {
-  this.speed = 0;
-  this.playAnimationWithReset(this.IMAGES_ALERT, "alert");
-  this.alertFrameCount++;
-}
+  /**
+   * Handles boss behavior based on distance to character
+   * @param {number} distance - Distance to character
+   */
+  handleBossAttackBehavior(distance) {
+    if (distance < 150) {
+      this.performCloseAttack();
+    } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
+      this.performAlertBehavior();
+    } else {
+      this.performChaseBehavior();
+    }
+  }
 
-/**
- * Performs chase behavior
- */
-performChaseBehavior() {
-  this.speed = 4;
-  this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
-  this.moveLeft();
-}
+  /**
+   * Performs close range attack
+   */
+  performCloseAttack() {
+    this.speed = 2;
+    this.playAnimationWithReset(this.IMAGES_ATTACK, "attack");
+    this.moveLeft();
+  }
 
+  /**
+   * Performs alert behavior
+   */
+  performAlertBehavior() {
+    this.speed = 0;
+    this.playAnimationWithReset(this.IMAGES_ALERT, "alert");
+    this.alertFrameCount++;
+  }
+
+  /**
+   * Performs chase behavior
+   */
+  performChaseBehavior() {
+    this.speed = 4;
+    this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
+    this.moveLeft();
+  }
 
   playAnimationWithReset(images, animationType) {
     if (this.lastAnimationType !== animationType) {
