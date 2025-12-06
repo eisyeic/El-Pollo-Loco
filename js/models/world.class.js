@@ -16,7 +16,7 @@ class World {
   totalCoins = 5;
   totalBottles = 7;
   lastThrowTime = 0;
-  throwCooldown = 300;
+  throwCooldown = 1000;
   screenlayer = false;
   gameOverSoundsPlayed = false;
   soundVolume = 0.1;
@@ -176,7 +176,7 @@ scheduleBottleRespawn(originalX, originalY) {
     newBottle.originalX = originalX;
     newBottle.originalY = originalY;
     this.level.bottle.push(newBottle);
-  }, 8000);
+  }, 5000);
 }
 
 

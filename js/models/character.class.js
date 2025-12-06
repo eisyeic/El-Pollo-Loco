@@ -148,7 +148,7 @@ class Character extends MovableObject {
   startAnimationLoop() {
     setInterval(() => {
       this.handleAnimations();
-    }, 50);
+    }, 100);
   }
 
   /**
@@ -175,88 +175,7 @@ class Character extends MovableObject {
    * Handles jump animation with proper phases
    */
   handleJumpAnimation() {
-    if (this.isJumpStartPhase()) {
-      this.playJumpStartAnimation();
-    } else if (this.isJumpUpPhase()) {
-      this.playJumpUpAnimation();
-    } else if (this.isJumpDownPhase()) {
-      this.playJumpDownAnimation();
-    } else if (this.isJumpLandPhase()) {
-      this.playJumpLandAnimation();
-    } else {
-      this.playJumpFallbackAnimation();
-    }
-
-    this.resetJumpAnimationIfGrounded();
-  }
-
-  /**
-   * Checks if character is in jump start phase
-   */
-  isJumpStartPhase() {
-    return !this.jumpStarted && this.jumpStartIndex < 8;
-  }
-
-  /**
-   * Checks if character is in jump up phase
-   */
-  isJumpUpPhase() {
-    return this.speedY > 0;
-  }
-
-  /**
-   * Checks if character is in jump down phase
-   */
-  isJumpDownPhase() {
-    return this.speedY <= 0 && !this.isLanding;
-  }
-
-  /**
-   * Checks if character is in jump land phase
-   */
-  isJumpLandPhase() {
-    return this.isLanding && this.jumpLandIndex < 6;
-  }
-
-  /**
-   * Plays jump start animation
-   */
-  playJumpStartAnimation() {
-    let imageIndex = Math.floor(this.jumpStartIndex / 2);
-    this.img = this.imageCache[this.IMAGES_JUMPING[imageIndex]];
-    this.jumpStartIndex++;
-    if (this.jumpStartIndex >= 8) this.jumpStarted = true;
-  }
-
-  /**
-   * Plays jump up animation
-   */
-  playJumpUpAnimation() {
-    this.img = this.imageCache[this.IMAGES_JUMPING[4]];
-  }
-
-  /**
-   * Plays jump down animation
-   */
-  playJumpDownAnimation() {
-    this.img = this.imageCache[this.IMAGES_JUMPING[5]];
-    if (this.y > 150) this.isLanding = true;
-  }
-
-  /**
-   * Plays jump land animation
-   */
-  playJumpLandAnimation() {
-    let imageIndex = 6 + Math.floor(this.jumpLandIndex / 2);
-    this.img = this.imageCache[this.IMAGES_JUMPING[imageIndex]];
-    this.jumpLandIndex++;
-  }
-
-  /**
-   * Plays fallback jump animation
-   */
-  playJumpFallbackAnimation() {
-    this.img = this.imageCache[this.IMAGES_JUMPING[8]];
+    this.playAnimation(this.IMAGES_JUMPING);
   }
 
   /**
@@ -275,7 +194,7 @@ class Character extends MovableObject {
    * Handles idle animation
    */
   handleIdleAnimation() {
-    if (Date.now() - this.lastMovement > 8000) {
+    if (Date.now() - this.lastMovement > 5000) {
       this.playAnimation(this.IMAGES_LONG_IDLE);
     } else {
       this.playAnimation(this.IMAGES_IDLE);

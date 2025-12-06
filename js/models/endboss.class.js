@@ -74,7 +74,7 @@ class Endboss extends MovableObject {
   }
 
   hit() {
-    this.energy -= 20;
+    this.energy -= 10;
     if (this.energy < 0) {
       this.energy = 0;
     } else {
@@ -169,7 +169,7 @@ class Endboss extends MovableObject {
    * @param {number} distance - Distance to character
    */
   handleBossAttackBehavior(distance) {
-    if (distance < 150) {
+    if (distance < 180) {
       this.performCloseAttack();
     } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
       this.performAlertBehavior();
@@ -182,7 +182,7 @@ class Endboss extends MovableObject {
    * Performs close range attack
    */
   performCloseAttack() {
-    this.speed = 2;
+    this.speed = 8;
     this.playAnimationWithReset(this.IMAGES_ATTACK, "attack");
     this.moveLeft();
   }
@@ -200,7 +200,7 @@ class Endboss extends MovableObject {
    * Performs chase behavior
    */
   performChaseBehavior() {
-    this.speed = 4;
+    this.speed = 10;
     this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
     this.moveLeft();
   }
