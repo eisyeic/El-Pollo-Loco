@@ -14,6 +14,7 @@ class Endboss extends MovableObject {
   isNearCharacter = false;
   currentAnimationType = null;
   lastAnimationType = null;
+  isActivated = false;
   offset = {
     top: 80,
     left: 50,
@@ -93,25 +94,28 @@ class Endboss extends MovableObject {
 
   animate() {
     setInterval(() => {
-      let currentlyVisible = this.isVisible();
-      this.isNearCharacter =
-        world && world.character && Math.abs(this.x - world.character.x) < 150;
-
+      this.checkActivation();
+      
       if (this.energy <= 0) {
         this.bossEnergyZero();
       } else if (this.isHurt()) {
         this.bossEnergyHurt();
-      } else if (
-        world &&
-        world.character &&
-        world.character.x > 2000 &&
-        currentlyVisible
-      ) {
-        this.bossAttack(currentlyVisible);
+      } else if (this.isActivated) {
+        this.continuousAttack();
       }
-
-      this.wasVisible = currentlyVisible;
     }, 150);
+  }
+
+  checkActivation() {
+    if (!this.isActivated && world && world.character && world.character.x > 2000) {
+      this.isActivated = true;
+      this.speed = 8;
+    }
+  }
+
+  continuousAttack() {
+    this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
+    this.moveLeft();
   }
 
   bossEnergyZero() {
@@ -141,69 +145,7 @@ class Endboss extends MovableObject {
     this.playAnimationWithReset(this.IMAGES_HURT, "hurt");
   }
 
-  bossAttack(currentlyVisible) {
-    this.resetAlertCountIfNeeded();
-    let distance = this.getDistanceToCharacter();
-    this.handleBossAttackBehavior(distance);
-  }
 
-  /**
-   * Resets alert frame count if boss wasn't visible before
-   */
-  resetAlertCountIfNeeded() {
-    if (!this.wasVisible) {
-      this.alertFrameCount = 0;
-    }
-  }
-
-  /**
-   * Gets distance between boss and character
-   * @returns {number} Distance to character
-   */
-  getDistanceToCharacter() {
-    return Math.abs(this.x - world.character.x);
-  }
-
-  /**
-   * Handles boss behavior based on distance to character
-   * @param {number} distance - Distance to character
-   */
-  handleBossAttackBehavior(distance) {
-    if (distance < 180) {
-      this.performCloseAttack();
-    } else if (this.alertFrameCount < this.IMAGES_ALERT.length * 2) {
-      this.performAlertBehavior();
-    } else {
-      this.performChaseBehavior();
-    }
-  }
-
-  /**
-   * Performs close range attack
-   */
-  performCloseAttack() {
-    this.speed = 8;
-    this.playAnimationWithReset(this.IMAGES_ATTACK, "attack");
-    this.moveLeft();
-  }
-
-  /**
-   * Performs alert behavior
-   */
-  performAlertBehavior() {
-    this.speed = 0;
-    this.playAnimationWithReset(this.IMAGES_ALERT, "alert");
-    this.alertFrameCount++;
-  }
-
-  /**
-   * Performs chase behavior
-   */
-  performChaseBehavior() {
-    this.speed = 10;
-    this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
-    this.moveLeft();
-  }
 
   playAnimationWithReset(images, animationType) {
     if (this.lastAnimationType !== animationType) {
