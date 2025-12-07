@@ -221,6 +221,7 @@ class Character extends MovableObject {
    */
   jump() {
     this.speedY = 30;
+    this.lastMovement = Date.now();
     this.world.playSound("audio/jump.mp3");
   }
 }

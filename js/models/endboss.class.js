@@ -15,6 +15,9 @@ class Endboss extends MovableObject {
   currentAnimationType = null;
   lastAnimationType = null;
   isActivated = false;
+  lastSpeedChange = 0;
+  lastJump = 0;
+  isJumping = false;
   offset = {
     top: 80,
     left: 50,
@@ -71,6 +74,9 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
     this.x = 2500;
+    this.y = 50;
+    this.lastSpeedChange = Date.now();
+    this.lastJump = Date.now();
     this.animate();
   }
 
@@ -101,21 +107,41 @@ class Endboss extends MovableObject {
       } else if (this.isHurt()) {
         this.bossEnergyHurt();
       } else if (this.isActivated) {
-        this.continuousAttack();
+        this.aggressiveAttack();
       }
     }, 150);
+    
+    this.applyGravity();
   }
 
   checkActivation() {
     if (!this.isActivated && world && world.character && world.character.x > 2000) {
       this.isActivated = true;
-      this.speed = 8;
+      this.speed = 12;
     }
   }
 
-  continuousAttack() {
+  aggressiveAttack() {
+    this.changeSpeedRandomly();
+    this.attemptJump();
     this.playAnimationWithReset(this.IMAGES_WALKING, "walking");
     this.moveLeft();
+  }
+
+  changeSpeedRandomly() {
+    let now = Date.now();
+    if (now - this.lastSpeedChange > 2000) {
+      this.speed = Math.random() > 0.5 ? 15 : 8;
+      this.lastSpeedChange = now;
+    }
+  }
+
+  attemptJump() {
+    let now = Date.now();
+    if (now - this.lastJump > 3000 && !this.isAboveGround() && Math.random() > 0.7) {
+      this.speedY = 25;
+      this.lastJump = now;
+    }
   }
 
   bossEnergyZero() {
@@ -143,9 +169,14 @@ class Endboss extends MovableObject {
 
   bossEnergyHurt() {
     this.playAnimationWithReset(this.IMAGES_HURT, "hurt");
+    this.moveLeft();
   }
 
 
+
+  isAboveGround() {
+    return this.y < 50;
+  }
 
   playAnimationWithReset(images, animationType) {
     if (this.lastAnimationType !== animationType) {

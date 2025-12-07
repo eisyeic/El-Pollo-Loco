@@ -160,6 +160,7 @@ throwBottle(currentTime) {
   }
   
   this.lastThrowTime = currentTime;
+  this.character.lastMovement = Date.now();
   this.playSound("audio/throw.mp3");
 }
 
